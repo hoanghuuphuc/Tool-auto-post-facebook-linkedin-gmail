@@ -35,8 +35,8 @@ def menu_facebook():
     time.sleep(2)
     driver=webdriver.Chrome()
     driver.get("https://www.facebook.com/")
-    driver.find_element("name","email").send_keys("tnkt2602@gmail.com")
-    driver.find_element("name","pass").send_keys("Nvd@191002")
+    driver.find_element("name","email").send_keys("********")
+    driver.find_element("name","pass").send_keys("********")
     driver.find_element("name","login").click()
     for i in range (len(LinkGroup)):
         time.sleep(2)
