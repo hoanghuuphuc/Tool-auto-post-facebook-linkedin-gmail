@@ -35,30 +35,40 @@ def menu_facebook():
     time.sleep(2)
     driver=webdriver.Chrome()
     driver.get("https://www.facebook.com/")
-    driver.find_element("name","email").send_keys("********")
-    driver.find_element("name","pass").send_keys("********")
+    baseDir = os.path.dirname(os.path.realpath(sys.argv[0])) + os.path.sep
+    config = configparser.RawConfigParser()
+    config.read(baseDir + 'mail_acount.cfg')
+    driver.find_element("name","email").send_keys(config.get('CREDS', 'facebook_username'))
+    driver.find_element("name","pass").send_keys(config.get('CREDS', 'facebook_password'))
     driver.find_element("name","login").click()
     for i in range (len(LinkGroup)):
-        time.sleep(2)
-        driver.get(LinkGroup[i])
-        time.sleep(2)
-        element = driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div[2]/div/div/div/div[1]/div/div/div/div[1]/div/div[1]/span").click()
-        time.sleep(3)
-        element = driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[1]/form/div/div[1]/div/div/div[1]/div/div[2]/div[1]/div[1]/div[1]/div[1]/div/div/div/div/div[2]/div/div/div/div").send_keys(message[i])
-        time.sleep(1)
-        clickanh=driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[1]/form/div/div[1]/div/div/div[1]/div/div[3]/div[1]/div[2]/div[1]/div/span/div/div/div[1]/div/div/div[1]/i").click()
-        time.sleep(3)
-        clickAnh=driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[1]/form/div/div[1]/div/div/div[1]/div/div[2]/div[1]/div[1]/div[2]/div/div[1]/div/div[1]/div/div[1]/div/div/div/div[1]/div/i").click()
-        time.sleep(3)
-        pyautogui.write(image[i])
-        time.sleep(2)
-        pyautogui.keyDown("enter")
-        time.sleep(2)
-        dangbai=driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[1]/form/div/div[1]/div/div/div[1]/div/div[3]/div[2]/div/div/div/div[1]").click()
-        time.sleep(5)
+        try:
+            time.sleep(2)
+            driver.get(LinkGroup[i])
+            time.sleep(2)
+            element= driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[3]/div/div/div/div[1]/div[1]/div[4]/div/div[2]/div/div/div/div[1]/div/div/div/div[1]/div/div[1]/span").click()
+            time.sleep(3)
+            element = driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[1]/form/div/div[1]/div/div/div[1]/div/div[2]/div[1]/div[1]/div[1]/div[1]/div/div/div/div/div[2]/div/div/div/div").send_keys(message[i])
+            time.sleep(1)
+            clickanh=driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[1]/form/div/div[1]/div/div/div[1]/div/div[3]/div[1]/div[2]/div[1]/div/span/div/div/div[1]/div/div/div[1]/i").click()
+            time.sleep(3)
+            clickAnh=driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[1]/form/div/div[1]/div/div/div[1]/div/div[2]/div[1]/div[1]/div[2]/div/div[1]/div/div[1]/div/div[1]/div/div/div/div[1]/div/i").click()
+            time.sleep(3)
+            pyautogui.write(image[i])
+            time.sleep(2)
+            pyautogui.keyDown("enter")
+            time.sleep(2)
+            dangbai=driver.find_element("xpath","/html/body/div[1]/div/div[1]/div/div[4]/div/div/div[1]/div/div[2]/div/div/div/div/div[1]/form/div/div[1]/div/div/div[1]/div/div[3]/div[2]/div/div/div/div[1]").click()
+            time.sleep(5)
+        except:
+            thamgia=driver.find_element("xpath","/html/body/div[1]/div[1]/div[1]/div/div[3]/div/div/div/div[2]/div[1]/div[1]/div[2]/div/div/div/div/div[2]/div/div[1]").click()
 def menu_linkedin():
-    tk="volunteerqt123@gmail.com"
-    mk="volunteerqt12345"
+    baseDir = os.path.dirname(os.path.realpath(sys.argv[0])) + os.path.sep
+    config = configparser.RawConfigParser()
+    config.read(baseDir + 'mail_acount.cfg')
+    
+    tk=config.get('CREDS', 'linkedin_username')
+    mk=config.get('CREDS', 'linkedin_password')
     excel_data_df = pandas.read_excel('linkedin.xlsx')
     page=excel_data_df['Link'].tolist()
     noi_dung=excel_data_df['NoiDung'].tolist()
@@ -117,17 +127,13 @@ def menu_gmail():
             file_type = imghdr.what(m.name)
             file_name = m.name
         message.add_attachment(file_data, maintype = 'image', subtype = file_type, filename = file_name)
-
         context = ssl.create_default_context()
-
         with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
             print("Đã gửi Gmail", i + 1)
             time.sleep(10)
-
     df.drop(df.filter(regex="Unnamed"),axis=1, inplace=True)
-
     with pandas.ExcelWriter('Danhsach.xlsx', engine="openpyxl", mode='a', if_sheet_exists='overlay') as writer:
         df.to_excel(writer, sheet_name="Sheet1")
         writer.save()
@@ -137,15 +143,15 @@ def main():
         menu()
         try: 
             chon=int(input("Nền Tảng Của Bạn Là Số Mấy:"))
-            if chon == 1:
+            if chon ==1:
                 menu_facebook()
-                break
+                print("Đã xong")
             elif chon ==2:
                 menu_linkedin()
-                break
+                print("Đã xong")
             elif chon ==3:
                 menu_gmail()
-                break
+                print("Đã xong")
             else:
                 print("-----Không Có trong chức năng vui lòng nhập lại-----")
         except:
